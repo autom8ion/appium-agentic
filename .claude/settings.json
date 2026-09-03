@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew test:*)",
+      "Bash(./gradlew :examples:testAndroid:*)",
+      "Bash(./gradlew :examples:testIos:*)",
+      "Bash(./gradlew build:*)",
+      "Bash(./gradlew compileKotlin:*)",
+      "Bash(git log:*)",
+      "Bash(git blame:*)",
+      "Bash(git diff:*)",
+      "Bash(find . -path */build/allure-results*)",
+      "Bash(grep -r Thread.sleep*)"
+    ]
+  }
+}
