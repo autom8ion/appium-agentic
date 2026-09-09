@@ -31,11 +31,13 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
     override fun enterPassword(password: String) = passwordField.sendKeys("$password\n")
 
     override fun tapLogin() {
-        // The button is below the login form's scroll view fold — the same page-source dump
+        // The button is below the login form's scroll view fold — a CI page-source dump
         // showed it at visible="false" with y=676 while the scroll view's own visible frame
-        // ends at y=674 — so scroll it into view before tapping.
-        val button = iosDriver.findElement(loginButtonLocator)
-        iosDriver.executeScript("mobile: scroll", mapOf("element" to button, "toVisible" to true))
-        button.click()
+        // ends at y=674 — so scroll it into view before tapping. `mobile: scroll` targeted at
+        // the button element ("toVisible") failed with WDA's own "Failed to find scrollable
+        // visible parent with 2 visible children", so scroll the frontmost view generically
+        // instead and re-locate the button afterward.
+        iosDriver.executeScript("mobile: scroll", mapOf("direction" to "down"))
+        iosDriver.findElement(loginButtonLocator).click()
     }
 }
