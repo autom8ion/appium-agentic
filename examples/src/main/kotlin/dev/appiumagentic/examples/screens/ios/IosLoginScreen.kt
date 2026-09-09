@@ -21,6 +21,7 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
     private val passwordField by element(
         AppiumBy.iOSClassChain("**/XCUIElementTypeSecureTextField[1]"),
     )
+    private val scrollViewLocator = AppiumBy.className("XCUIElementTypeScrollView")
     private val loginButtonLocator = AppiumBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Login\"`]")
 
     override fun enterUsername(username: String) = usernameField.sendKeys(username)
@@ -33,11 +34,15 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
     override fun tapLogin() {
         // The button is below the login form's scroll view fold — a CI page-source dump
         // showed it at visible="false" with y=676 while the scroll view's own visible frame
-        // ends at y=674 — so scroll it into view before tapping. `mobile: scroll` targeted at
-        // the button element ("toVisible") failed with WDA's own "Failed to find scrollable
-        // visible parent with 2 visible children", so scroll the frontmost view generically
-        // instead and re-locate the button afterward.
-        iosDriver.executeScript("mobile: scroll", mapOf("direction" to "down"))
+        // ends at y=674 — so scroll it into view before tapping. Two things ruled out first:
+        // `mobile: scroll` targeted at the button element ("toVisible") fails with WDA's own
+        // "Failed to find scrollable visible parent with 2 visible children"; an untargeted
+        // `{"direction": "down"}` scroll swipes across the whole frontmost view and can start
+        // its drag on the password field, re-focusing it and popping the keyboard back up
+        // over the button. Scoping the scroll to the form's own scroll view element avoids
+        // both.
+        val scrollView = iosDriver.findElement(scrollViewLocator)
+        iosDriver.executeScript("mobile: scroll", mapOf("element" to scrollView, "direction" to "down"))
         iosDriver.findElement(loginButtonLocator).click()
     }
 }
