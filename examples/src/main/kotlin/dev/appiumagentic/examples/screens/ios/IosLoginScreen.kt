@@ -21,18 +21,21 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
     private val passwordField by element(
         AppiumBy.iOSClassChain("**/XCUIElementTypeSecureTextField[1]"),
     )
-    private val loginButton by element(
-        AppiumBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Login\"`]"),
-    )
+    private val loginButtonLocator = AppiumBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Login\"`]")
 
     override fun enterUsername(username: String) = usernameField.sendKeys(username)
 
-    // The Login button sits near the bottom of the screen, under where the keyboard covers it
-    // once the password field has focus. WebDriverAgent's dismiss-keyboard command (tried with
-    // several key-name/strategy combinations) consistently failed against this screen with
-    // "Did not know how to dismiss the keyboard", so dismiss it the way Apple's own XCTest
-    // documents for `typeText:`: a trailing "\n" simulates tapping the keyboard's Return key.
+    // A trailing "\n" simulates tapping the keyboard's Return key (documented XCTest
+    // `typeText:` behavior), dismissing the keyboard — confirmed via a CI page-source dump
+    // that no XCUIElementTypeKeyboard element remains once this runs.
     override fun enterPassword(password: String) = passwordField.sendKeys("$password\n")
 
-    override fun tapLogin() = loginButton.click()
+    override fun tapLogin() {
+        // The button is below the login form's scroll view fold — the same page-source dump
+        // showed it at visible="false" with y=676 while the scroll view's own visible frame
+        // ends at y=674 — so scroll it into view before tapping.
+        val button = iosDriver.findElement(loginButtonLocator)
+        iosDriver.executeScript("mobile: scroll", mapOf("element" to button, "toVisible" to true))
+        button.click()
+    }
 }
