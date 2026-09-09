@@ -4,6 +4,7 @@ import dev.appiumagentic.core.config.PlatformConfig
 import dev.appiumagentic.core.driver.CapabilityBuilder
 import io.appium.java_client.android.options.UiAutomator2Options
 import org.openqa.selenium.Capabilities
+import java.time.Duration
 
 /** Builds [UiAutomator2Options] capabilities for a local Android Emulator session. */
 object AndroidCapabilityBuilder : CapabilityBuilder {
@@ -15,4 +16,8 @@ object AndroidCapabilityBuilder : CapabilityBuilder {
             .setNewCommandTimeout(config.newCommandTimeout)
             .setNoReset(config.noReset)
             .setAutoGrantPermissions(true)
+            // Default app-launch wait (20s) is occasionally too tight on loaded CI runners —
+            // seen intermittently in CI as "SplashActivity never started" session-creation
+            // failures on an otherwise-healthy emulator.
+            .setAppWaitDuration(Duration.ofSeconds(60))
 }
