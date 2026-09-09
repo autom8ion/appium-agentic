@@ -29,5 +29,11 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
 
     override fun enterPassword(password: String) = passwordField.sendKeys(password)
 
-    override fun tapLogin() = loginButton.click()
+    override fun tapLogin() {
+        // The Login button sits near the bottom of the screen, under where the keyboard
+        // covers it once the password field has focus — dismiss it first so the tap actually
+        // lands on the button instead of the keyboard.
+        hideKeyboard()
+        loginButton.click()
+    }
 }
