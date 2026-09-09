@@ -43,6 +43,8 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
         // previously-focused field doesn't reclaim it on return since this app never
         // implements refocus-on-foreground.
         iosDriver.runAppInBackground(Duration.ofSeconds(1))
+        println("DEBUG isKeyboardShown right after background/foreground: ${iosDriver.isKeyboardShown}")
+        println("DEBUG page source right after background/foreground: ${iosDriver.pageSource}")
         iosDriver.findElement(loginButtonLocator).click()
     }
 }
