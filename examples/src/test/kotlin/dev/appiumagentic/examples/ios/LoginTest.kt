@@ -19,6 +19,8 @@ class LoginTest {
         val login = IosLoginScreen(driver)
         login.login(username = "bob@example.com", password = "10203040")
 
+        println("DEBUG page source after login: ${driver.pageSource}")
+
         assertThat(catalog.screen).isVisible()
     }
 }
