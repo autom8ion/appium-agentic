@@ -13,18 +13,20 @@ class LoginTest {
 
     @Test
     fun `logging in with valid credentials shows the product catalog`(driver: AndroidDriver) {
-        val login = AndroidLoginScreen(driver)
-
-        login.login(username = "bod@example.com", password = "10203040")
-
         val products = AndroidProductsScreen(driver)
+        products.openLogin()
+
+        val login = AndroidLoginScreen(driver)
+        login.login(username = "bob@example.com", password = "10203040")
+
         assertThat(products.title).isVisible()
     }
 
     @Test
     fun `submitting without a username shows a validation error`(driver: AndroidDriver) {
-        val login = AndroidLoginScreen(driver)
+        AndroidProductsScreen(driver).openLogin()
 
+        val login = AndroidLoginScreen(driver)
         login.tapLogin()
 
         assertThat(login.usernameError).hasText("Username is required")
