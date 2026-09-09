@@ -4,7 +4,7 @@ import dev.appiumagentic.examples.screens.LoginScreen
 import dev.appiumagentic.ios.IosScreen
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.ios.IOSDriver
-import org.openqa.selenium.NoSuchElementException
+import java.time.Duration
 
 /**
  * Confirmed against My Demo App iOS 2.2.2's `LoginViewController.swift` and
@@ -29,22 +29,20 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
     override fun enterPassword(password: String) = passwordField.sendKeys(password)
 
     override fun tapLogin() {
-        // This app has no in-UI way to dismiss the keyboard (no `textFieldShouldReturn`, no
-        // `keyboardDismissMode` on the scroll view). Every raw-coordinate approach tried here
-        // (typed "\n", tapping the Return key directly, a raw W3C swipe over the keyboard's
-        // own area) left it up — the login form's scroll view can only scroll ~59px total
-        // (content height 612 vs. frame height 553), nowhere near enough to lift the button
-        // above the keyboard's ~230px, so dismissing it isn't optional here. `mobile: swipe`
-        // calls XCTest's own native `.swipeDown()` on a target element rather than
-        // synthesizing a touch sequence, so swipe the keyboard element itself down — iOS's
-        // system-wide "drag down on the keyboard to dismiss" gesture, called natively instead
-        // of via raw coordinates.
-        try {
-            val keyboard = iosDriver.findElement(AppiumBy.className("XCUIElementTypeKeyboard"))
-            iosDriver.executeScript("mobile: swipe", mapOf("element" to keyboard, "direction" to "down"))
-        } catch (_: NoSuchElementException) {
-            // Keyboard wasn't shown — nothing to dismiss.
-        }
+        // This app has no in-UI way to dismiss the keyboard: no `textFieldShouldReturn`, no
+        // `keyboardDismissMode` on the scroll view (so no interactive drag-to-dismiss either —
+        // that's opt-in per scroll view, not a system-wide gesture). Every touch-based
+        // approach tried here — typed "\n", tapping the real Return key, a raw W3C swipe over
+        // the keyboard, and even XCTest's native `.swipeDown()` via `mobile: swipe` targeted
+        // at the keyboard element — left it up. And the login form's scroll view can only
+        // scroll ~59px total (content height 612 vs. frame height 553), nowhere near enough to
+        // lift the button above the keyboard's ~230px, so dismissing it isn't optional here.
+        //
+        // Briefly backgrounding and re-foregrounding the app dismisses the keyboard as an
+        // OS-level side effect, independent of anything the app itself supports, and the
+        // previously-focused field doesn't reclaim it on return since this app never
+        // implements refocus-on-foreground.
+        iosDriver.runAppInBackground(Duration.ofSeconds(1))
         iosDriver.findElement(loginButtonLocator).click()
     }
 }
