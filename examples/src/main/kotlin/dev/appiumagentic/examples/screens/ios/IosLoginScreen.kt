@@ -27,13 +27,12 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
 
     override fun enterUsername(username: String) = usernameField.sendKeys(username)
 
-    override fun enterPassword(password: String) = passwordField.sendKeys(password)
+    // The Login button sits near the bottom of the screen, under where the keyboard covers it
+    // once the password field has focus. WebDriverAgent's dismiss-keyboard command (tried with
+    // several key-name/strategy combinations) consistently failed against this screen with
+    // "Did not know how to dismiss the keyboard", so dismiss it the way Apple's own XCTest
+    // documents for `typeText:`: a trailing "\n" simulates tapping the keyboard's Return key.
+    override fun enterPassword(password: String) = passwordField.sendKeys("$password\n")
 
-    override fun tapLogin() {
-        // The Login button sits near the bottom of the screen, under where the keyboard
-        // covers it once the password field has focus — dismiss it first so the tap actually
-        // lands on the button instead of the keyboard.
-        hideKeyboard()
-        loginButton.click()
-    }
+    override fun tapLogin() = loginButton.click()
 }
