@@ -6,17 +6,21 @@ import io.appium.java_client.AppiumBy
 import io.appium.java_client.ios.IOSDriver
 
 /**
- * NOTE: this environment has no iOS Simulator available to run Appium Inspector against, so
- * these locators were derived by statically inspecting the compiled app bundle (Info.plist and
- * storyboard nib strings) rather than confirmed live. `userNameTF`/`passwordTF` match the
- * IBOutlet property names found in the nib, a common (but unconfirmed) convention for also
- * naming the accessibility identifier. Verify with Appium Inspector against a booted simulator
- * before relying on this in CI, and adjust if they don't match.
+ * Confirmed against My Demo App iOS 2.2.2's `LoginViewController.swift` and
+ * `Authentication.storyboard`: neither the username nor password `UITextField` has an
+ * `accessibilityIdentifier` assigned anywhere (the `userNameTF`/`passwordTF` IBOutlet names
+ * are not exposed as accessibility ids — CI confirmed `accessibilityId("userNameTF")` finds
+ * nothing), so accessibilityId isn't available for these two fields. Both are unique by
+ * XCUITest element type on this screen — the password field is the only
+ * `XCUIElementTypeSecureTextField` because of its `secureTextEntry` flag — so iOSClassChain is
+ * the documented exception.
  */
 class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
 
-    private val usernameField by element(AppiumBy.accessibilityId("userNameTF"))
-    private val passwordField by element(AppiumBy.accessibilityId("passwordTF"))
+    private val usernameField by element(AppiumBy.iOSClassChain("**/XCUIElementTypeTextField[1]"))
+    private val passwordField by element(
+        AppiumBy.iOSClassChain("**/XCUIElementTypeSecureTextField[1]"),
+    )
     private val loginButton by element(
         AppiumBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Login\"`]"),
     )
