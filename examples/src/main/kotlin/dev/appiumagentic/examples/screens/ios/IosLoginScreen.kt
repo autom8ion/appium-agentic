@@ -4,6 +4,9 @@ import dev.appiumagentic.examples.screens.LoginScreen
 import dev.appiumagentic.ios.IosScreen
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.ios.IOSDriver
+import org.openqa.selenium.interactions.PointerInput
+import org.openqa.selenium.interactions.Sequence
+import java.time.Duration
 
 /**
  * Confirmed against My Demo App iOS 2.2.2's `LoginViewController.swift` and
@@ -21,7 +24,6 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
     private val passwordField by element(
         AppiumBy.iOSClassChain("**/XCUIElementTypeSecureTextField[1]"),
     )
-    private val scrollViewLocator = AppiumBy.className("XCUIElementTypeScrollView")
     private val loginButtonLocator = AppiumBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Login\"`]")
 
     override fun enterUsername(username: String) = usernameField.sendKeys(username)
@@ -34,15 +36,22 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
     override fun tapLogin() {
         // The button is below the login form's scroll view fold — a CI page-source dump
         // showed it at visible="false" with y=676 while the scroll view's own visible frame
-        // ends at y=674 — so scroll it into view before tapping. Two things ruled out first:
-        // `mobile: scroll` targeted at the button element ("toVisible") fails with WDA's own
-        // "Failed to find scrollable visible parent with 2 visible children"; an untargeted
-        // `{"direction": "down"}` scroll swipes across the whole frontmost view and can start
-        // its drag on the password field, re-focusing it and popping the keyboard back up
-        // over the button. Scoping the scroll to the form's own scroll view element avoids
-        // both.
-        val scrollView = iosDriver.findElement(scrollViewLocator)
-        iosDriver.executeScript("mobile: scroll", mapOf("element" to scrollView, "direction" to "down"))
+        // ends at y=674 — so scroll it into view before tapping. `mobile: scroll` (both
+        // element-targeted "toVisible", which fails with WDA's "Failed to find scrollable
+        // visible parent with 2 visible children", and a plain "direction" swipe, whether
+        // untargeted or scoped to the scroll view) computes its gesture around the target's
+        // own bounding-box center, which lands on the password field (the scroll view's
+        // vertical center coincides with it) and re-focuses it, popping the keyboard back up
+        // over the button — confirmed by repeat CI page-source dumps. Issue a raw W3C swipe
+        // with coordinates chosen to fall on blank space above both text fields instead, so
+        // the gesture can't touch either one.
+        val finger = PointerInput(PointerInput.Kind.TOUCH, "finger")
+        val swipeUp = Sequence(finger, 0)
+            .addAction(finger.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), 196, 235))
+            .addAction(finger.createPointerDown(0))
+            .addAction(finger.createPointerMove(Duration.ofMillis(300), PointerInput.Origin.viewport(), 196, 140))
+            .addAction(finger.createPointerUp(0))
+        iosDriver.perform(listOf(swipeUp))
         iosDriver.findElement(loginButtonLocator).click()
     }
 }
