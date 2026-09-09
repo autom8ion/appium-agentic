@@ -13,8 +13,9 @@ an LLM in the test-execution path.
 
 - JDK 17+ on `PATH` to run Gradle (the toolchain auto-provisioning plugin needs it); the
   framework code itself compiles against an auto-provisioned JDK 21 toolchain.
-- A local Appium 2.x server (`npm install -g appium@2 && appium driver install uiautomator2
-  xcuitest`) running on `http://127.0.0.1:4723`.
+- A local Appium 2.x server (`npm install -g appium@2 && appium driver install
+  uiautomator2@4.2.4 xcuitest@9.2.5`) running on `http://127.0.0.1:4723`. Driver versions are
+  pinned because newer `uiautomator2`/`xcuitest` driver releases require Appium 3.
 - A booted Android Emulator and/or iOS Simulator matching
   `examples/src/test/resources/config/{android,ios}/local.conf`.
 

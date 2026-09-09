@@ -36,7 +36,10 @@ jobs:
       - name: Start Appium server (UiAutomator2 driver)
         run: |
           npm install -g appium@2
-          appium driver install uiautomator2
+          # Pinned: uiautomator2-driver versions after 4.2.4 require Appium 3
+          # (peerDependency appium ^3.0.0-rc.2), incompatible with the appium@2
+          # server pinned above.
+          appium driver install uiautomator2@4.2.4
           appium --log-timestamp --log-level info &
           npx --yes wait-on tcp:4723 --timeout 60000
       - name: Run Android example tests
@@ -72,7 +75,10 @@ jobs:
       - name: Start Appium server (XCUITest driver)
         run: |
           npm install -g appium@2
-          appium driver install xcuitest
+          # Pinned: xcuitest-driver versions after 9.2.5 require Appium 3
+          # (peerDependency appium ^3.0.0-rc.2), incompatible with the appium@2
+          # server pinned above.
+          appium driver install xcuitest@9.2.5
           appium --log-timestamp --log-level info &
           npx --yes wait-on tcp:4723 --timeout 60000
       - name: Run iOS example tests
