@@ -77,9 +77,6 @@ fun registerPlatformTestTask(name: String, packagePattern: String) =
             "allure.results.directory",
             layout.buildDirectory.dir("allure-results").get().asFile.absolutePath,
         )
-        testLogging {
-            showStandardStreams = true
-        }
     }
 
 registerPlatformTestTask("testAndroid", "dev.appiumagentic.examples.android.*")
