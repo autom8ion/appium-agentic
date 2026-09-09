@@ -18,6 +18,8 @@ object AndroidCapabilityBuilder : CapabilityBuilder {
             .setAutoGrantPermissions(true)
             // Default app-launch wait (20s) is occasionally too tight on loaded CI runners —
             // seen intermittently in CI as "SplashActivity never started" session-creation
-            // failures on an otherwise-healthy emulator.
-            .setAppWaitDuration(Duration.ofSeconds(60))
+            // failures on an otherwise-healthy emulator. NEW_SESSION (the default @ResetApp
+            // strategy) plus no-reset=false means every test reinstalls the app fresh, adding
+            // to that variance; 60s wasn't consistently enough either.
+            .setAppWaitDuration(Duration.ofSeconds(120))
 }
