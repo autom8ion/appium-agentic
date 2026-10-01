@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
-import org.junit.jupiter.api.extension.TestWatcher
 import org.junit.platform.commons.support.AnnotationSupport
 import org.openqa.selenium.OutputType
 import org.slf4j.LoggerFactory
@@ -28,7 +27,7 @@ import java.io.ByteArrayInputStream
  * in the per-test [ExtensionContext.Store], so this is safe under JUnit 5 parallel execution
  * without any `ThreadLocal` bookkeeping.
  */
-class AppiumSessionExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver, TestWatcher {
+class AppiumSessionExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
     private val log = LoggerFactory.getLogger(AppiumSessionExtension::class.java)
 
@@ -47,16 +46,14 @@ class AppiumSessionExtension : BeforeEachCallback, AfterEachCallback, ParameterR
 
     override fun afterEach(context: ExtensionContext) {
         val session = store(context).remove(SESSION_KEY, MobileSession::class.java) ?: return
+        // Capture here, not in TestWatcher.testFailed: JUnit runs afterEach first, so by then
+        // the session below has already been closed and there's nothing left to capture.
+        if (context.executionException.isPresent) captureFailureArtifacts(session)
         try {
             applyResetStrategy(context, session)
         } finally {
             session.close()
         }
-    }
-
-    override fun testFailed(context: ExtensionContext, cause: Throwable) {
-        val session = store(context).get(SESSION_KEY, MobileSession::class.java) ?: return
-        captureFailureArtifacts(session)
     }
 
     override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =

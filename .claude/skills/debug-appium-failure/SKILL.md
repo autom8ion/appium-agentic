@@ -12,7 +12,7 @@ retries or auto-fixes the test — always surface findings for human review firs
 
 - **Allure results**: `examples/build/allure-results/*.json` (or `*.xml`) for the failing run —
   each result includes the failure message/stacktrace, timing, and (via `AppiumSessionExtension`'s
-  `TestWatcher`) an attached screenshot and page source captured at the moment of failure.
+  `afterEach`) an attached screenshot and page source captured at the moment of failure.
 - **Appium server log**: wherever the local server was started with output redirected, or the
   CI job's "Start Appium server" step log if this is a CI failure.
 - **Test config**: `examples/src/test/resources/config/<platform>/<env>.conf` for the
