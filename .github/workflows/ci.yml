@@ -48,6 +48,9 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
+          # The runner's default AVD is 320x640, which pushes product-details controls below
+          # the fold; use a real phone size (matches the local AVD).
+          profile: pixel_6
           # v1 runs a single API level; add more entries to a matrix here to expand coverage.
           script: ./gradlew :examples:testAndroid -DtestEnv=ci
       - name: Upload Allure results
@@ -118,6 +121,9 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
+          # The runner's default AVD is 320x640, which pushes product-details controls below
+          # the fold; use a real phone size (matches the local AVD).
+          profile: pixel_6
           # Maestro doesn't install the app itself (Appium does, via app-path caps).
           script: adb install -r examples/apps/mda.apk && ./gradlew :examples:maestroAndroid
       - name: Upload Maestro results
