@@ -1,0 +1,8 @@
+# AndroidCatalogScreen.openLogin(): drawer menu -> Login.
+# accessibilityId locators are content-descriptions, which Maestro matches via `text:`.
+appId: com.saucelabs.mydemoapp.android
+---
+- tapOn:
+    text: "View menu"
+- tapOn:
+    text: "Login Menu Item"

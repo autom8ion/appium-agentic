@@ -1,0 +1,8 @@
+appId: com.saucelabs.mydemo.app.ios
+name: the cart lists an added product
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/add_first_product_to_cart.yaml
+# Cart item names have no identifier, only their text.
+- assertVisible:
+    text: "Sauce Labs Backpack - Black"

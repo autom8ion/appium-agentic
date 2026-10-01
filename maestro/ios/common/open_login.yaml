@@ -1,0 +1,7 @@
+# IosCatalogScreen.openLogin(): More tab -> Login. Maestro iOS `id:` = accessibilityIdentifier.
+appId: com.saucelabs.mydemo.app.ios
+---
+- tapOn:
+    id: "More-tab-item"
+- tapOn:
+    id: "Login Button"

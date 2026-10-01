@@ -1,0 +1,15 @@
+appId: com.saucelabs.mydemoapp.android
+name: the catalog lists products sorted by name
+---
+- runFlow: ../common/launch.yaml
+# More than one product: a second "Product Title" (content-desc) exists.
+- assertVisible:
+    text: "Product Title"
+    index: 1
+# Maestro can't combine a content-desc and a text match on one element (`text:` covers both),
+# so these check the first product's values are on screen, not strictly that they're first.
+- assertVisible:
+    text: "Sauce Labs Backpack"
+# `text:` is a regex; escape the `$`.
+- assertVisible:
+    text: "\\$ 29.99"

@@ -17,6 +17,15 @@ class ScreenElement(private val driver: AppiumDriver, private val locator: By) {
     private fun resolve(timeout: Duration = Waits.DEFAULT_TIMEOUT): WebElement =
         Waits.until(driver, timeout) { it.findElement(locator) }
 
+    /** True once no matching element is displayed (absent or hidden), false if one still is at [timeout]. */
+    @JvmOverloads
+    fun isGone(timeout: Duration = Waits.DEFAULT_TIMEOUT): Boolean =
+        try {
+            Waits.until(driver, timeout) { d -> d.findElements(locator).none { it.isDisplayed } }
+        } catch (e: TimeoutException) {
+            false
+        }
+
     fun click() = resolve().click()
 
     fun sendKeys(text: String) = resolve().sendKeys(text)

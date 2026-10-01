@@ -20,6 +20,15 @@ class MobileElementAssert(actual: ScreenElement) : AbstractAssert<MobileElementA
         return this
     }
 
+    @JvmOverloads
+    fun isNotVisible(timeout: Duration = Duration.ofSeconds(10)): MobileElementAssert {
+        isNotNull
+        if (!actual.isGone(timeout)) {
+            failWithMessage("Expected element to disappear within %s but it was still visible", timeout)
+        }
+        return this
+    }
+
     fun hasText(expected: String): MobileElementAssert {
         isNotNull
         val actualText = actual.text

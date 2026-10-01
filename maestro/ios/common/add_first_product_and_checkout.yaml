@@ -1,0 +1,6 @@
+# CheckoutTest.addFirstProductAndCheckout().
+appId: com.saucelabs.mydemo.app.ios
+---
+- runFlow: add_first_product_to_cart.yaml
+- tapOn:
+    id: "ProceedToCheckout"

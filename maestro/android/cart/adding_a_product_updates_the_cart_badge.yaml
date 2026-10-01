@@ -1,0 +1,9 @@
+appId: com.saucelabs.mydemoapp.android
+name: adding a product updates the cart badge
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/add_first_product_to_cart.yaml
+# The badge's content-desc is shared with the cart icon; cartTV is the only unique locator.
+- assertVisible:
+    id: "cartTV"
+    text: "1"

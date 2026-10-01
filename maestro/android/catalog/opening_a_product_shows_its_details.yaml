@@ -1,0 +1,18 @@
+appId: com.saucelabs.mydemoapp.android
+name: opening a product shows its details
+---
+- runFlow: ../common/launch.yaml
+# The click listener is on the product image, not the title.
+- tapOn:
+    text: "Product Image"
+    index: 0
+- assertVisible:
+    id: "productTV"
+    text: "Sauce Labs Backpack"
+# `text:` is a regex; escape the `$`.
+- assertVisible:
+    id: "priceTV"
+    text: "\\$ 29.99"
+- assertVisible:
+    id: "noTV"
+    text: "1"

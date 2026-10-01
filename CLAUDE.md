@@ -22,6 +22,9 @@ in those modules.
 | `test-support`       | `@AppiumTest`, `AppiumSessionExtension`, `@ResetApp`, `MobileAssertions`   |
 | `examples`           | Real page objects + tests against the "My Demo App" sample apps           |
 
+Not a Gradle module: `maestro/` (repo root) is a sibling Maestro suite — YAML flows mirroring
+the Appium tests in `examples/`, run via `:examples:maestroAndroid`/`:examples:maestroIos`.
+
 Dependency direction: `core` → `page-object` → `platform-android`/`platform-ios` →
 `test-support` → `examples`. `core` never depends on a platform module — `MobileDriverFactory`
 is injected with one `CapabilityBuilder` per `Platform` by its caller (`AppiumSessionExtension`
@@ -42,6 +45,25 @@ wires this for you).
    `@AppiumTest(platform = Platform.ANDROID)` (or `.IOS`), with an `AndroidDriver`/`IOSDriver`
    test-method parameter. Assert via `MobileAssertions.assertThat(screenElement)`.
 5. The `scaffold-page-object` skill does steps 1–4 for you given a screen/flow description.
+
+## Maestro flows
+
+- Layout: `maestro/<platform>/<flow>/<case>.yaml`, one file per Appium test method (snake_case
+  of its name); shared steps in `maestro/<platform>/common/`, pulled in via `runFlow`.
+  `maestro/<platform>/config.yaml` lists which folders are runnable flows.
+- Each flow starts with `launchApp: { clearState: true }` (≙ `@ResetApp(NEW_SESSION)`).
+- Selectors must match the locators in the corresponding `Android*/Ios*Screen` — the page
+  objects (backed by `locator-inspector`) are the source of truth. Keep both suites' cases in
+  sync; the `maestro-flow-author` agent does this.
+- Run: install the app on the booted device first (Maestro doesn't), then
+  `./gradlew :examples:maestroAndroid` / `:examples:maestroIos`. Reports:
+  `examples/build/maestro/<platform>.xml`.
+
+## Claude Code agents
+
+`.claude/agents/`: `locator-inspector` (confirm locators from app source — run before writing
+any screen/flow), `page-object-scaffolder`, `page-object-reviewer` (read-only review of
+page object/test/flow diffs), `maestro-flow-author`, `mobile-test-debugger`.
 
 ## Naming conventions
 

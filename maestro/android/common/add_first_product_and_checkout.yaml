@@ -1,0 +1,8 @@
+# CheckoutTest.addFirstProductAndCheckout().
+appId: com.saucelabs.mydemoapp.android
+---
+- runFlow: add_first_product_to_cart.yaml
+- tapOn:
+    text: "View cart"
+- tapOn:
+    text: "Confirms products for checkout"

@@ -1,0 +1,12 @@
+# Stops at shipping validation: iOS can't complete an order (see IosShippingScreen).
+appId: com.saucelabs.mydemo.app.ios
+name: an empty shipping form shows a validation error
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/add_first_product_and_checkout.yaml
+- runFlow: ../common/login_bob.yaml
+# "To Payment" has no identifier, only its title.
+- tapOn:
+    text: "To Payment"
+- assertVisible:
+    text: "Please provide your full name."

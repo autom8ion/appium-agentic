@@ -1,0 +1,12 @@
+appId: com.saucelabs.mydemo.app.ios
+name: the catalog lists products sorted by name
+---
+- runFlow: ../common/launch.yaml
+# More than one product: a second "Product Name" label exists.
+- assertVisible:
+    id: "Product Name"
+    index: 1
+# Checks the expected name is on a product-name label, not strictly that it's the first one.
+- assertVisible:
+    id: "Product Name"
+    text: "Sauce Labs Backpack - Black"

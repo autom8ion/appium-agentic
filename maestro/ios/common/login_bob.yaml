@@ -1,0 +1,10 @@
+# IosLoginScreen.login("bob@example.com", "10203040"): the quick-select button fills both fields
+# without raising the keyboard, which would otherwise cover the Login button (see IosLoginScreen).
+appId: com.saucelabs.mydemo.app.ios
+---
+- tapOn: "bob@example.com"
+# The screen title is also a "Login" label (Authentication.storyboard:88), above the
+# instruction text; the Login button sits in the footer below it, so anchor on that.
+- tapOn:
+    text: "Login"
+    below: "Select a username from the list below"

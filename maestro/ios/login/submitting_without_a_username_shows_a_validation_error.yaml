@@ -1,0 +1,14 @@
+appId: com.saucelabs.mydemo.app.ios
+name: submitting without a username shows a validation error
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/open_login.yaml
+# Same Login-button caveat as common/login_bob.yaml.
+- tapOn:
+    text: "Login"
+    below: "Select a username from the list below"
+# UIAlertController: the page object finds it by its title; asserted here as visible text.
+- assertVisible:
+    text: "Validation Error!"
+- assertVisible:
+    text: "Username is required"

@@ -17,9 +17,12 @@ class AndroidLoginScreen(driver: AndroidDriver) : AndroidScreen(driver), LoginSc
     private val passwordField by element(AppiumBy.id("$PACKAGE:id/passwordET"))
 
     // The login button does have a contentDescription, so accessibilityId applies as normal.
-    private val loginButton by element(AppiumBy.accessibilityId("Tap to login with given credentials"))
+    val loginButton by element(AppiumBy.accessibilityId("Tap to login with given credentials"))
 
+    // Neither error TextView has a contentDescription. passwordErrorTV also shows the
+    // locked-out-user message (LoginFragment.java:189).
     val usernameError by element(AppiumBy.id("$PACKAGE:id/nameErrorTV"))
+    val passwordError by element(AppiumBy.id("$PACKAGE:id/passwordErrorTV"))
 
     override fun enterUsername(username: String) = usernameField.sendKeys(username)
 

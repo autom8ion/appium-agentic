@@ -1,0 +1,11 @@
+# openProduct(0) -> addToCart() -> openCart().
+appId: com.saucelabs.mydemo.app.ios
+---
+- tapOn:
+    id: "ProductItem"
+    index: 0
+- tapOn:
+    id: "AddToCart"
+# Every screen embeds its own tab buttons, so the cart tab works from product details.
+- tapOn:
+    id: "Cart-tab-item"

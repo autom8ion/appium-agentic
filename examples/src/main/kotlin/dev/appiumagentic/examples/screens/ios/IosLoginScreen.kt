@@ -2,6 +2,7 @@ package dev.appiumagentic.examples.screens.ios
 
 import dev.appiumagentic.examples.screens.LoginScreen
 import dev.appiumagentic.ios.IosScreen
+import dev.appiumagentic.pageobject.ScreenElement
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.ios.IOSDriver
 
@@ -21,13 +22,24 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
     private val passwordField by element(
         AppiumBy.iOSClassChain("**/XCUIElementTypeSecureTextField[1]"),
     )
-    private val loginButtonLocator = AppiumBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Login\"`]")
+    // The screen itself has no identifier; its instruction label is the only stable marker.
+    val header by element(
+        AppiumBy.iOSNsPredicateString("type == 'XCUIElementTypeStaticText' AND label == 'Select a username from the list below'"),
+    )
+
+    // Validation is a UIAlertController: the title is its identifier, the message has none.
+    val validationAlert by element(AppiumBy.accessibilityId("Validation Error!"))
+    val usernameRequiredMessage by element(
+        AppiumBy.iOSNsPredicateString("type == 'XCUIElementTypeStaticText' AND label == 'Username is required'"),
+    )
+
+    private val loginButton by element(AppiumBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Login\"`]"))
 
     override fun enterUsername(username: String) = usernameField.sendKeys(username)
 
     override fun enterPassword(password: String) = passwordField.sendKeys(password)
 
-    override fun tapLogin() = iosDriver.findElement(loginButtonLocator).click()
+    override fun tapLogin() = loginButton.click()
 
     /**
      * Overrides [LoginScreen]'s default type-then-submit flow: this screen's Login button sits
@@ -53,7 +65,7 @@ class IosLoginScreen(driver: IOSDriver) : IosScreen(driver), LoginScreen {
                 "username buttons — there's no reliable way to type an arbitrary password on " +
                 "this screen (see the class doc)."
         }
-        iosDriver.findElement(AppiumBy.iOSNsPredicateString("type == 'XCUIElementTypeButton' AND name == '$username'"))
+        ScreenElement(iosDriver, AppiumBy.iOSNsPredicateString("type == 'XCUIElementTypeButton' AND name == '$username'"))
             .click()
         tapLogin()
     }

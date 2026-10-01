@@ -1,0 +1,17 @@
+appId: com.saucelabs.mydemoapp.android
+name: adding a quantity of two counts both in the badge
+---
+- runFlow: ../common/launch.yaml
+- tapOn:
+    text: "Product Image"
+    index: 0
+- tapOn:
+    text: "Increase item quantity"
+- assertVisible:
+    id: "noTV"
+    text: "2"
+- tapOn:
+    text: "Tap to add product to cart"
+- assertVisible:
+    id: "cartTV"
+    text: "2"

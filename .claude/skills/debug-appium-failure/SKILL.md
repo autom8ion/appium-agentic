@@ -12,7 +12,7 @@ retries or auto-fixes the test — always surface findings for human review firs
 
 - **Allure results**: `examples/build/allure-results/*.json` (or `*.xml`) for the failing run —
   each result includes the failure message/stacktrace, timing, and (via `AppiumSessionExtension`'s
-  `TestWatcher`) an attached screenshot and page source captured at the moment of failure.
+  `afterEach`) an attached screenshot and page source captured at the moment of failure.
 - **Appium server log**: wherever the local server was started with output redirected, or the
   CI job's "Start Appium server" step log if this is a CI failure.
 - **Test config**: `examples/src/test/resources/config/<platform>/<env>.conf` for the
@@ -20,6 +20,11 @@ retries or auto-fixes the test — always surface findings for human review firs
 - **CI history** (if investigating flakiness): `git log` on the touched `Screen.kt`/locator
   files, and recent workflow runs, to see whether the flake correlates with a locator or app
   version change.
+
+- **Maestro failures** (`maestro/` suite): JUnit report at `examples/build/maestro/<platform>.xml`,
+  and per-run screenshots/logs under `~/.maestro/tests/<timestamp>/` (CI uploads both as the
+  `maestro-results-<platform>` artifact). A flow failing while the matching Appium test passes
+  usually means the flow's selector drifted from the page object's locator.
 
 For a deep investigation spanning many log files or multiple CI runs, delegate to the
 `mobile-test-debugger` subagent rather than pulling all of it into the main conversation.

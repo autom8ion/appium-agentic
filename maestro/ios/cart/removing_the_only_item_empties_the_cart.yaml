@@ -1,0 +1,14 @@
+appId: com.saucelabs.mydemo.app.ios
+name: removing the only item empties the cart
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/add_first_product_to_cart.yaml
+- assertVisible:
+    text: "Sauce Labs Backpack - Black"
+# "Remove Item" is the button title (no identifier), so it's a label match.
+- tapOn:
+    text: "Remove Item"
+# Not "No Items": that label is never hidden on iOS, only covered by the item list, so it
+# always reads as visible. Assert the item itself is gone instead.
+- assertNotVisible:
+    text: "Sauce Labs Backpack - Black"

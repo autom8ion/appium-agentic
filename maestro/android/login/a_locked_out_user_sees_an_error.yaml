@@ -1,0 +1,19 @@
+# Android-only: on iOS, alice@example.com logs in like any other user.
+appId: com.saucelabs.mydemoapp.android
+name: a locked out user sees an error
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/open_login.yaml
+- tapOn:
+    id: "nameET"
+- inputText: "alice@example.com"
+- tapOn:
+    id: "passwordET"
+- inputText: "10203040"
+- hideKeyboard
+- tapOn:
+    text: "Tap to login with given credentials"
+# passwordErrorTV also carries the locked-out message.
+- assertVisible:
+    id: "passwordErrorTV"
+    text: "Sorry this user has been locked out."

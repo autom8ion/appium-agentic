@@ -1,0 +1,13 @@
+appId: com.saucelabs.mydemo.app.ios
+name: adding a quantity of two updates the quantity
+---
+- runFlow: ../common/launch.yaml
+- tapOn:
+    id: "ProductItem"
+    index: 0
+# No identifier: XCUITest names the + button after its image asset, so it's a label match.
+- tapOn:
+    text: "AddPlus Icons"
+- assertVisible:
+    id: "Amount"
+    text: "2"

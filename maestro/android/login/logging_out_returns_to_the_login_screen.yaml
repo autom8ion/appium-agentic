@@ -1,0 +1,17 @@
+appId: com.saucelabs.mydemoapp.android
+name: logging out returns to the login screen
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/open_login.yaml
+- runFlow: ../common/login_bob.yaml
+- assertVisible:
+    text: "title"
+- tapOn:
+    text: "View menu"
+- tapOn:
+    text: "Logout Menu Item"
+# Plain AlertDialog: the page object uses android:id/button1; its visible label is "LOGOUT".
+- tapOn:
+    text: "LOGOUT"
+- assertVisible:
+    text: "Tap to login with given credentials"

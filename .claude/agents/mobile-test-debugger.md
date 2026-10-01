@@ -14,7 +14,8 @@ first). Work through:
 
 1. Gather every relevant artifact: Allure results under `**/build/allure-results/`, attached
    screenshots/page source for the failing test(s), the Appium server log for the run(s), and
-   the resolved `config/<platform>/<env>.conf` for the environment.
+   the resolved `config/<platform>/<env>.conf` for the environment. For a Maestro flow
+   failure, use `examples/build/maestro/<platform>.xml` and `~/.maestro/tests/<run>/` instead.
 2. If investigating flakiness, correlate across runs: does it reproduce on a specific
    device/CI runner? Does `git log` on the touched `Screen.kt`/locator files show a recent
    change that lines up with when the flake started? Does it correlate with a particular
