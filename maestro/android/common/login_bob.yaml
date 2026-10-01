@@ -1,0 +1,13 @@
+# AndroidLoginScreen.login("bob@example.com", "10203040"); expects the login screen to be shown.
+appId: com.saucelabs.mydemoapp.android
+---
+# Fields have only resource-ids (no content-desc).
+- tapOn:
+    id: "nameET"
+- inputText: "bob@example.com"
+- tapOn:
+    id: "passwordET"
+- inputText: "10203040"
+- hideKeyboard
+- tapOn:
+    text: "Tap to login with given credentials"

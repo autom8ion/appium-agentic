@@ -1,0 +1,7 @@
+appId: com.saucelabs.mydemo.app.ios
+name: checking out while logged out asks the user to log in
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/add_first_product_and_checkout.yaml
+- assertVisible:
+    text: "Select a username from the list below"

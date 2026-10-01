@@ -73,6 +73,10 @@ fun registerPlatformTestTask(name: String, packagePattern: String) =
             includeTestsMatching(packagePattern)
         }
         systemProperty("testEnv", System.getProperty("testEnv", "local"))
+        // Forward -Dappium-agentic.* overrides (see PlatformConfig) into the test JVM.
+        System.getProperties().stringPropertyNames()
+            .filter { it.startsWith("appium-agentic.") }
+            .forEach { systemProperty(it, System.getProperty(it)) }
         systemProperty(
             "allure.results.directory",
             layout.buildDirectory.dir("allure-results").get().asFile.absolutePath,
@@ -89,3 +93,28 @@ tasks.named<Test>("test") {
         layout.buildDirectory.dir("allure-results").get().asFile.absolutePath,
     )
 }
+
+// Maestro sibling suite (repo-root maestro/): shells out to the `maestro` CLI — its default
+// install location (~/.maestro/bin) if present, else whatever is on PATH. The fallback matters
+// because a Gradle daemon started before installing Maestro won't see the updated PATH. Unlike the Appium tasks, Maestro doesn't install the app itself — install
+// apps/mda.apk / apps/MyDemoApp.app on the booted device first (CI does this explicitly).
+val maestroExecutable = File(System.getProperty("user.home"), ".maestro/bin/maestro")
+    .takeIf { it.canExecute() }?.absolutePath ?: "maestro"
+
+fun registerMaestroTask(name: String, platform: String) =
+    tasks.register<Exec>(name) {
+        group = "verification"
+        description = "Runs the Maestro $platform flows under maestro/$platform against a booted device."
+        dependsOn("downloadSampleApps")
+        val report = layout.buildDirectory.file("maestro/$platform.xml").get().asFile
+        doFirst { report.parentFile.mkdirs() }
+        commandLine(
+            maestroExecutable, "test",
+            "--format", "junit",
+            "--output", report.absolutePath,
+            rootProject.layout.projectDirectory.dir("maestro/$platform").asFile.absolutePath,
+        )
+    }
+
+registerMaestroTask("maestroAndroid", "android")
+registerMaestroTask("maestroIos", "ios")

@@ -1,0 +1,93 @@
+appId: com.saucelabs.mydemoapp.android
+name: a logged in user can place an order
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/add_first_product_and_checkout.yaml
+# Logging in from checkout continues straight to the shipping form.
+- runFlow: ../common/login_bob.yaml
+
+# Shipping. Before each later field: hide the keyboard and scroll it into view — a tap on a
+# field hidden under the keyboard lands on the keyboard instead (Appium's sendKeys doesn't
+# tap). Not before the first field: with no keyboard up, Android's hideKeyboard presses BACK.
+- scrollUntilVisible:
+    element:
+      id: "fullNameET"
+- tapOn:
+    id: "fullNameET"
+- inputText: "Rebecca Winter"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "address1ET"
+- tapOn:
+    id: "address1ET"
+- inputText: "Mandorley 112"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "cityET"
+- tapOn:
+    id: "cityET"
+- inputText: "Truro"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "zipET"
+- tapOn:
+    id: "zipET"
+- inputText: "89750"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "countryET"
+- tapOn:
+    id: "countryET"
+- inputText: "United Kingdom"
+- hideKeyboard
+# "To Payment" sits below the fold in a NestedScrollView.
+- scrollUntilVisible:
+    element:
+      text: "Saves user info for checkout"
+- tapOn:
+    text: "Saves user info for checkout"
+
+# Payment. nameET is the same resource-id as the login username; unique on this step. No
+# hideKeyboard before it: the keyboard was already hidden before "To Payment".
+- scrollUntilVisible:
+    element:
+      id: "nameET"
+- tapOn:
+    id: "nameET"
+- inputText: "Rebecca Winter"
+# Digits only: the card number/expiry fields insert their own spaces and slash.
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "cardNumberET"
+- tapOn:
+    id: "cardNumberET"
+- inputText: "3258125675687891"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "expirationDateET"
+- tapOn:
+    id: "expirationDateET"
+- inputText: "0330"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "securityCodeET"
+- tapOn:
+    id: "securityCodeET"
+- inputText: "123"
+- hideKeyboard
+- tapOn:
+    text: "Saves payment info and launches screen to review checkout data"
+
+# Review
+- tapOn:
+    text: "Completes the process of checkout"
+- assertVisible:
+    id: "completeTV"
+    text: "Checkout Complete"

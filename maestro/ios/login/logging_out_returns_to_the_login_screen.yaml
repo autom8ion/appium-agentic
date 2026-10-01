@@ -1,0 +1,16 @@
+appId: com.saucelabs.mydemo.app.ios
+name: logging out returns to the login screen
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/open_login.yaml
+- runFlow: ../common/login_bob.yaml
+- assertVisible:
+    id: "Catalog-screen"
+# Same "Login Button" entry reads "Log Out" once logged in; no confirm alert on iOS.
+- tapOn:
+    id: "More-tab-item"
+- tapOn:
+    id: "Login Button"
+# IosLoginScreen.header: the screen has no identifier, only this instruction label.
+- assertVisible:
+    text: "Select a username from the list below"

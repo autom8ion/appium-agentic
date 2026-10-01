@@ -1,0 +1,17 @@
+appId: com.saucelabs.mydemo.app.ios
+name: opening a product shows its details
+---
+- runFlow: ../common/launch.yaml
+- tapOn:
+    id: "ProductItem"
+    index: 0
+# The name label has no identifier, only its text.
+- assertVisible:
+    text: "Sauce Labs Backpack - Black"
+# `text:` is a regex; escape the `$`.
+- assertVisible:
+    id: "Price"
+    text: "\\$ 29.99"
+- assertVisible:
+    id: "Amount"
+    text: "1"

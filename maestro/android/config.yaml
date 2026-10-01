@@ -1,0 +1,5 @@
+flows:
+  - "login/*"
+  - "catalog/*"
+  - "cart/*"
+  - "checkout/*"

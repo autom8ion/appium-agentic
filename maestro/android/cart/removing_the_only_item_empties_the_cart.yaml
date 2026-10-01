@@ -1,0 +1,12 @@
+appId: com.saucelabs.mydemoapp.android
+name: removing the only item empties the cart
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/add_first_product_to_cart.yaml
+- tapOn:
+    text: "View cart"
+- tapOn:
+    text: "Removes product from cart"
+- assertVisible:
+    id: "noItemTitleTV"
+    text: "No Items"

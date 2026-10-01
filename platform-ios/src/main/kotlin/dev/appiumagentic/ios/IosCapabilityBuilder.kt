@@ -14,4 +14,7 @@ object IosCapabilityBuilder : CapabilityBuilder {
             .setApp(config.appPath)
             .setNewCommandTimeout(config.newCommandTimeout)
             .setNoReset(config.noReset)
+            // Don't open the Simulator UI app: tests never need it, and Xcode 27 no longer ships
+            // it where the pinned xcuitest driver looks ("Simulator.app does not exist").
+            .setIsHeadless(true)
 }

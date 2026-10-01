@@ -1,0 +1,10 @@
+appId: com.saucelabs.mydemoapp.android
+name: submitting without a username shows a validation error
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/open_login.yaml
+- tapOn:
+    text: "Tap to login with given credentials"
+- assertVisible:
+    id: "nameErrorTV"
+    text: "Username is required"

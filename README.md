@@ -30,6 +30,27 @@ Both tasks depend on `:examples:downloadSampleApps`, which fetches the pinned
 [Sauce Labs "My Demo App"](https://github.com/saucelabs/my-demo-app-android) Android/iOS builds
 into `examples/apps/` (gitignored) on first run.
 
+## Maestro suite
+
+[`maestro/`](./maestro) holds YAML flows that mirror the Appium tests case-for-case against the
+same apps and the same locators — handy for comparing the two approaches side by side. Install
+the [Maestro CLI](https://maestro.mobile.dev), install the app on a booted device
+(`adb install examples/apps/mda.apk` / `xcrun simctl install booted examples/apps/MyDemoApp.app`),
+then:
+
+```
+./gradlew :examples:maestroAndroid
+./gradlew :examples:maestroIos
+```
+
+JUnit reports land in `examples/build/maestro/`. No Appium server needed.
+
+## Claude Code agents
+
+`.claude/agents/` has dev-time subagents: `locator-inspector` (confirms locators from the app
+source/bundle), `page-object-scaffolder`, `page-object-reviewer`, `maestro-flow-author`, and
+`mobile-test-debugger`.
+
 ## Modules
 
 `core` → `page-object` → `platform-android` / `platform-ios` → `test-support` → `examples`.

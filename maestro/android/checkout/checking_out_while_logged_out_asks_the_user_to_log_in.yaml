@@ -1,0 +1,7 @@
+appId: com.saucelabs.mydemoapp.android
+name: checking out while logged out asks the user to log in
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/add_first_product_and_checkout.yaml
+- assertVisible:
+    text: "Tap to login with given credentials"

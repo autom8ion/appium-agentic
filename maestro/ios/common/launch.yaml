@@ -1,0 +1,14 @@
+# Fresh launch (≙ @ResetApp(NEW_SESSION)), then wait for the catalog. After clearState the
+# app occasionally never shows a window (the relaunch races the old task's teardown), so
+# relaunch if the catalog doesn't appear.
+appId: com.saucelabs.mydemo.app.ios
+---
+- retry:
+    maxRetries: 2
+    commands:
+      - launchApp:
+          clearState: true
+      - extendedWaitUntil:
+          visible:
+            id: "Catalog-screen"
+          timeout: 15000

@@ -11,4 +11,9 @@ abstract class AndroidScreen(protected val androidDriver: AndroidDriver) : Scree
     protected fun pressBack() {
         androidDriver.pressKey(KeyEvent(AndroidKey.BACK))
     }
+
+    /** Hides the soft keyboard if shown; UiAutomator2's hideKeyboard errors when it isn't. */
+    protected fun hideKeyboard() {
+        if (androidDriver.isKeyboardShown) androidDriver.hideKeyboard()
+    }
 }

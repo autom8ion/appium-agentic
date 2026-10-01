@@ -21,6 +21,11 @@ retries or auto-fixes the test — always surface findings for human review firs
   files, and recent workflow runs, to see whether the flake correlates with a locator or app
   version change.
 
+- **Maestro failures** (`maestro/` suite): JUnit report at `examples/build/maestro/<platform>.xml`,
+  and per-run screenshots/logs under `~/.maestro/tests/<timestamp>/` (CI uploads both as the
+  `maestro-results-<platform>` artifact). A flow failing while the matching Appium test passes
+  usually means the flow's selector drifted from the page object's locator.
+
 For a deep investigation spanning many log files or multiple CI runs, delegate to the
 `mobile-test-debugger` subagent rather than pulling all of it into the main conversation.
 

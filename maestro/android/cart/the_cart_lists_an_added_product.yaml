@@ -1,0 +1,11 @@
+appId: com.saucelabs.mydemoapp.android
+name: the cart lists an added product
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/add_first_product_to_cart.yaml
+- tapOn:
+    text: "View cart"
+# AndroidCartScreen.item(): resource-id titleTV plus text.
+- assertVisible:
+    id: "titleTV"
+    text: "Sauce Labs Backpack"
